@@ -1,0 +1,103 @@
+Sub Sudoku()
+
+Range("A1:C3").Name = "Cell1"
+Range("D1:F3").Name = "Cell2"
+Range("G1:I3").Name = "Cell3"
+Range("A4:C6").Name = "Cell4"
+Range("D4:F6").Name = "Cell5"
+Range("G4:I6").Name = "Cell6"
+Range("A7:C9").Name = "Cell7"
+Range("D7:F9").Name = "Cell8"
+Range("G7:I9").Name = "Cell9"
+
+Dim Gridnum As Integer
+Dim Gridcheck As Integer
+Dim ZeroCounter As Integer
+
+ZeroCounter = 0
+Gridcheck = 0
+
+Dim rCell As Range
+Dim NumBank(1 To 9) As Integer
+
+Dim CellValue As Integer
+
+
+For Runs = 1 To 8
+
+For Row = 1 To 9
+
+    For Col = 1 To 9
+        
+        For i = 1 To 9
+            NumBank(i) = 0
+        Next i
+
+        If IsEmpty(Cells(Row, Col).Value) = True Then
+
+        For x = 1 To 9
+
+        If IsEmpty(Cells(Row, x).Value) = False Then
+            CellValue = Cells(Row, x).Value
+            NumBank(CellValue) = 1
+        End If
+
+        Next x
+
+        For y = 1 To 9
+
+        If IsEmpty(Cells(y, Col).Value) = False Then
+            CellValue = Cells(y, Col).Value
+            NumBank(CellValue) = 1
+        End If
+
+        Next y
+
+        Gridnum = 1
+
+        Do While Gridcheck = 0
+            Set isect = Application.Intersect(Cells(Row, Col), Range("Cell" & Gridnum))
+                If isect Is Nothing Then
+                Gridnum = Gridnum + 1
+                Else
+                Gridcheck = 1
+                End If
+        Loop
+        
+        Gridcheck = 0
+       
+            
+        For Each rCell In Range("Cell" & Gridnum)
+            If IsEmpty(rCell.Value) = False Then
+                CellValue = rCell.Value
+                NumBank(CellValue) = 1
+            End If
+        Next rCell
+
+        ZeroCounter = 0
+        For w = 1 To 9
+        If NumBank(w) = 0 Then
+           ZeroCounter = ZeroCounter + 1
+        End If
+
+        Next w
+        
+        If ZeroCounter = 1 Then
+        
+        pos = Application.Match(0, NumBank, False)
+        Cells(Row, Col) = pos
+
+        End If
+
+        Gridnum = 1
+
+        End If
+
+    Next Col
+
+Next Row
+Next Runs
+
+MsgBox "Done!"
+
+End Sub
